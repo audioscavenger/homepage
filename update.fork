@@ -28,6 +28,14 @@ else
 fi
 
 git fetch fork "$BRANCH"
+OLD_HEAD="$(git rev-parse HEAD 2>/dev/null || true)"
+NEW_HEAD="$(git rev-parse "fork/$BRANCH")"
+
+if [[ -n "$OLD_HEAD" && "$OLD_HEAD" == "$NEW_HEAD" ]]; then
+  echo "No new commits on fork/$BRANCH; skipping build."
+  exit 0
+fi
+
 git checkout -f -B "$BRANCH" "fork/$BRANCH"
 git reset --hard "fork/$BRANCH"
 
