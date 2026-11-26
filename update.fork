@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Pull and build Homepage from the fork's lxc-maintenance branch.
+# Fully self-contained daily updater for Homepage fork.
 set -euo pipefail
+
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/.local/share/pnpm:${PATH:-}"
 
 REPO_DIR="${HOMEPAGE_DIR:-/opt/homepage}"
 REMOTE_URL="https://github.com/audioscavenger/homepage.git"
@@ -31,5 +33,18 @@ git reset --hard "fork/$BRANCH"
 
 pnpm install --frozen-lockfile
 pnpm build
+
+restarted=0
+for svc in homepage homepage.service next; do
+  if systemctl list-unit-files "$svc" 2>/dev/null | grep -q "$svc"; then
+    systemctl restart "$svc"
+    restarted=1
+    break
+  fi
+done
+
+if [[ "$restarted" -eq 0 ]]; then
+  echo "Build complete; no known systemd service found to restart." >&2
+fi
 
 echo "Homepage updated from fork/$BRANCH"
