@@ -28,6 +28,11 @@ else
 fi
 
 git fetch fork "$BRANCH"
+
+# Remove stale files from older Homepage releases that conflict with the fork.
+rm -f middleware.js src/middleware.js src/src/middleware.js
+rm -rf .next
+
 OLD_HEAD="$(git rev-parse HEAD 2>/dev/null || true)"
 NEW_HEAD="$(git rev-parse "fork/$BRANCH")"
 
@@ -40,7 +45,7 @@ git checkout -f -B "$BRANCH" "fork/$BRANCH"
 git reset --hard "fork/$BRANCH"
 
 pnpm install --frozen-lockfile
-pnpm build
+NEXT_TELEMETRY_DISABLED=1 pnpm build
 
 restarted=0
 for svc in homepage homepage.service next; do
@@ -52,7 +57,7 @@ for svc in homepage homepage.service next; do
 done
 
 if [[ "$restarted" -eq 0 ]]; then
-  echo "Build complete; no known systemd service found to restart." >&2
+  echo "Build complete; no known systemd service found to reinstall." >&2
 fi
 
 echo "Homepage updated from fork/$BRANCH"
