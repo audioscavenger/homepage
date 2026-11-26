@@ -37,16 +37,7 @@ export default function Component({ service: configuredService }) {
   const activeProviders = new Set(
     activeConnections.map((connection) => connection?.provider).filter(Boolean),
   ).size || activeConnections.length;
-  const models = (modelsData.models ?? []).filter((model) => {
-    const caps = model?.caps ?? {};
-    return (
-      caps.reasoning === true ||
-      caps.vision === true ||
-      caps.search === true ||
-      caps.tools === true ||
-      (caps.contextWindow ?? 0) >= 131072
-    );
-  }).length;
+  const models = modelsData.models?.length ?? 0;
   const combos = combosData.combos?.length ?? 0;
   const activeRequests = (usageData.activeRequests ?? []).reduce(
     (total, request) => total + (request?.count ?? 1),
