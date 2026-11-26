@@ -51,7 +51,7 @@ export default function Component({ service: configuredService }) {
 
   return (
     <Container service={service}>
-      <Block label="9router.providers" value={providers} />
+      <Block label="9router.providers" value={activeProviders} />
       <Block label="9router.models" value={models} />
       <Block label="9router.combos" value={combos} />
       <Block label="9router.status" value={status} />
