@@ -32,7 +32,12 @@ describe("widgets/9router/component", () => {
     useWidgetAPI.mockImplementation((_widget, endpoint) => {
       if (endpoint === "providers") {
         return {
-          data: { connections: [{ isActive: true, testStatus: "active" }, { isActive: true }] },
+          data: {
+            connections: [
+              { provider: "claude", isActive: true, testStatus: "active" },
+              { provider: "opencode", isActive: true },
+            ],
+          },
           error: undefined,
         };
       }
@@ -40,9 +45,9 @@ describe("widgets/9router/component", () => {
         return {
           data: {
             models: [
-              { caps: { reasoning: true } },
-              { caps: { vision: true } },
-              { caps: { contextWindow: 131072 } },
+              { provider: "cc", caps: { reasoning: true } },
+              { provider: "cc", caps: { vision: true } },
+              { provider: "oc", caps: { contextWindow: 131072 } },
             ],
           },
           error: undefined,
@@ -74,16 +79,16 @@ describe("widgets/9router/component", () => {
         return {
           data: {
             connections: [
-              { isActive: false, testStatus: "available" },
-              { isActive: true, testStatus: "unavailable" },
-              { isActive: true, testStatus: "available" },
+              { provider: "claude", isActive: false, testStatus: "available" },
+              { provider: "claude", isActive: true, testStatus: "unavailable" },
+              { provider: "claude", isActive: true, testStatus: "available" },
             ],
           },
           error: undefined,
         };
       }
       if (endpoint === "models") {
-        return { data: { models: [{ caps: { tools: true } }] }, error: undefined };
+        return { data: { models: [{ provider: "cc", caps: { tools: true } }] }, error: undefined };
       }
       if (endpoint === "usage") {
         return { data: { activeRequests: [{ count: 1 }] }, error: undefined };
@@ -95,7 +100,7 @@ describe("widgets/9router/component", () => {
       settings: { hideErrors: false },
     });
 
-    expectBlockValue(container, "9router.providers", 1);
+    expectBlockValue(container, "9router.providers", 2);
     expectBlockValue(container, "9router.models", 1);
     expectBlockValue(container, "9router.combos", 1);
     expectBlockValue(container, "9router.activeRequests", 1);
@@ -119,7 +124,7 @@ describe("widgets/9router/component", () => {
       settings: { hideErrors: false },
     });
 
-    expectBlockValue(container, "9router.providers", 0);
+    expectBlockValue(container, "9router.providers", 1);
     expectBlockValue(container, "9router.models", 0);
     expectBlockValue(container, "9router.combos", 0);
     expectBlockValue(container, "9router.activeRequests", 0);
