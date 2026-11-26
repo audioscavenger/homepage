@@ -14,6 +14,9 @@ const widget = {
     combos: {
       endpoint: "combos",
     },
+    usage: {
+      endpoint: "usage/stats",
+    },
   },
 };
 

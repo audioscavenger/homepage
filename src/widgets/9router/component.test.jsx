@@ -48,6 +48,9 @@ describe("widgets/9router/component", () => {
           error: undefined,
         };
       }
+      if (endpoint === "usage") {
+        return { data: { activeRequests: [{ count: 2 }, { count: 1 }] }, error: undefined };
+      }
       return { data: { combos: [1, 2] }, error: undefined };
     });
 
@@ -58,7 +61,7 @@ describe("widgets/9router/component", () => {
     expectBlockValue(container, "9router.providers", 2);
     expectBlockValue(container, "9router.models", 3);
     expectBlockValue(container, "9router.combos", 2);
-    expectBlockValue(container, "9router.status", "OK");
+    expectBlockValue(container, "9router.activeRequests", 3);
   });
 
   it("loads widget metadata", () => {
@@ -82,6 +85,9 @@ describe("widgets/9router/component", () => {
       if (endpoint === "models") {
         return { data: { models: [{ caps: { tools: true } }] }, error: undefined };
       }
+      if (endpoint === "usage") {
+        return { data: { activeRequests: [{ count: 1 }] }, error: undefined };
+      }
       return { data: { combos: [1] }, error: undefined };
     });
 
@@ -92,7 +98,7 @@ describe("widgets/9router/component", () => {
     expectBlockValue(container, "9router.providers", 1);
     expectBlockValue(container, "9router.models", 1);
     expectBlockValue(container, "9router.combos", 1);
-    expectBlockValue(container, "9router.status", "OK");
+    expectBlockValue(container, "9router.activeRequests", 1);
   });
 
   it("renders zero counts and down status when arrays are missing", () => {
@@ -101,6 +107,9 @@ describe("widgets/9router/component", () => {
         return { data: { connections: undefined }, error: undefined };
       }
       if (endpoint === "models") {
+        return { data: {}, error: undefined };
+      }
+      if (endpoint === "usage") {
         return { data: {}, error: undefined };
       }
       return { data: {}, error: undefined };
@@ -113,7 +122,7 @@ describe("widgets/9router/component", () => {
     expectBlockValue(container, "9router.providers", 0);
     expectBlockValue(container, "9router.models", 0);
     expectBlockValue(container, "9router.combos", 0);
-    expectBlockValue(container, "9router.status", "Down");
+    expectBlockValue(container, "9router.activeRequests", 0);
   });
 
   it("renders error state", () => {

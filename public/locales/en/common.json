@@ -363,7 +363,8 @@
     "providers": "Providers",
     "models": "Models",
     "combos": "Combos",
-    "status": "Status"
+    "status": "Status",
+    "activeRequests": "Active Requests"
   },
   "speedtest": {
     "upload": "Upload",
