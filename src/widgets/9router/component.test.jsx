@@ -37,7 +37,16 @@ describe("widgets/9router/component", () => {
         };
       }
       if (endpoint === "models") {
-        return { data: { models: [1, 2, 3] }, error: undefined };
+        return {
+          data: {
+            models: [
+              { caps: { reasoning: true } },
+              { caps: { vision: true } },
+              { caps: { contextWindow: 131072 } },
+            ],
+          },
+          error: undefined,
+        };
       }
       return { data: { combos: [1, 2] }, error: undefined };
     });
@@ -71,7 +80,7 @@ describe("widgets/9router/component", () => {
         };
       }
       if (endpoint === "models") {
-        return { data: { models: [1] }, error: undefined };
+        return { data: { models: [{ caps: { tools: true } }] }, error: undefined };
       }
       return { data: { combos: [1] }, error: undefined };
     });
@@ -80,7 +89,7 @@ describe("widgets/9router/component", () => {
       settings: { hideErrors: false },
     });
 
-    expectBlockValue(container, "9router.providers", 3);
+    expectBlockValue(container, "9router.providers", 1);
     expectBlockValue(container, "9router.models", 1);
     expectBlockValue(container, "9router.combos", 1);
     expectBlockValue(container, "9router.status", "OK");

@@ -29,14 +29,25 @@ export default function Component({ service: configuredService }) {
     );
   }
 
-  const providers = providersData.connections?.length ?? 0;
-  const activeProviders =
-    providersData.connections?.filter(
-      (connection) => connection.isActive !== false && connection.testStatus !== "unavailable",
-    ).length ?? 0;
-  const models = modelsData.models?.length ?? 0;
+  const connections = providersData.connections ?? [];
+  const activeConnections = connections.filter(
+    (connection) => connection?.isActive === true && connection?.testStatus !== "unavailable",
+  );
+  const activeProviders = new Set(
+    activeConnections.map((connection) => connection?.provider).filter(Boolean),
+  ).size || activeConnections.length;
+  const models = (modelsData.models ?? []).filter((model) => {
+    const caps = model?.caps ?? {};
+    return (
+      caps.reasoning === true ||
+      caps.vision === true ||
+      caps.search === true ||
+      caps.tools === true ||
+      (caps.contextWindow ?? 0) >= 131072
+    );
+  }).length;
   const combos = combosData.combos?.length ?? 0;
-  const status = activeProviders > 0 ? "OK" : "Down";
+  const status = activeConnections.length > 0 ? "OK" : "Down";
 
   return (
     <Container service={service}>
