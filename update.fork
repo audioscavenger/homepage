@@ -6,14 +6,27 @@ REPO_DIR="${HOMEPAGE_DIR:-/opt/homepage}"
 REMOTE_URL="https://github.com/audioscavenger/homepage.git"
 BRANCH="lxc-maintenance"
 
+mkdir -p "$REPO_DIR"
 cd "$REPO_DIR"
+
+git config --global --add safe.directory "$REPO_DIR" 2>/dev/null || true
+
+if [[ ! -d .git ]]; then
+  if [[ -z "$(ls -A 2>/dev/null)" ]]; then
+    git clone --branch "$BRANCH" "$REMOTE_URL" .
+  else
+    git init
+  fi
+fi
 
 if ! git remote get-url fork >/dev/null 2>&1; then
   git remote add fork "$REMOTE_URL"
+else
+  git remote set-url fork "$REMOTE_URL"
 fi
 
 git fetch fork "$BRANCH"
-git checkout -B "$BRANCH" "fork/$BRANCH"
+git checkout -f -B "$BRANCH" "fork/$BRANCH"
 git reset --hard "fork/$BRANCH"
 
 pnpm install --frozen-lockfile
